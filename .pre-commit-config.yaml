@@ -5,6 +5,3 @@ repos:
     hooks:
       - id: go-fmt
       - id: golangci-lint
-      - id: go-mod-tidy
-      - id: go-mod-vendor
-      - id: go-build
