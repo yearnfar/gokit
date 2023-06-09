@@ -1,0 +1,15 @@
+linters:
+  disable-all: true
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - goimports
+    - ineffassign
+    - typecheck
+    - unused
+    - bodyclose
+
+
+run:
+  timeout: 3m
