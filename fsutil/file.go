@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 // IsFile 检查是否文件
@@ -15,6 +17,39 @@ func IsFile(filename string) bool {
 		return true
 	}
 	return false
+}
+
+// FileName 只返回文件名称
+func FileName(fp string) string {
+	name := filepath.Base(fp)
+	suffix := filepath.Ext(name)
+	return strings.TrimSuffix(name, suffix)
+}
+
+// FileExt 返回文件扩展名，如 foo.png 返回 .png
+func FileExt(path string) string {
+	return strings.ToLower(filepath.Ext(path))
+}
+
+// FileSize 返回文件大小
+func FileSize(path string) (int64, error) {
+	fi, err := os.Stat(path)
+	if err != nil {
+		return 0, err
+	}
+	return fi.Size(), nil
+}
+
+// HumanReadableSize 可读大小
+func HumanReadableSize(n int64) string {
+	const unit = 1024
+	i, size := 0, float64(n)
+	for size >= unit {
+		size /= unit
+		i++
+	}
+	units := []string{"B", "KB", "MB", "GB", "TB", "PB", "EB"}
+	return fmt.Sprintf("%.2f %s", size, units[i])
 }
 
 // MD5File md5文件
