@@ -1,7 +1,8 @@
 package mathutil
 
+// Number 包含所有数字类型
 type Number interface {
-	~int | ~int8 | ~int16 | ~int32 | ~int64 | ~float32 | ~float64
+	~int | ~uint | ~int8 | ~uint8 | ~int16 | ~uint16 | ~int32 | ~uint32 | ~int64 | ~uint64 | ~float32 | ~float64
 }
 
 // Min 返回最小值
