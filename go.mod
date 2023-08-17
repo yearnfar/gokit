@@ -2,7 +2,10 @@ module github.com/yearnfar/gokit
 
 go 1.20
 
-require github.com/gin-gonic/gin v1.9.1
+require (
+	github.com/gin-gonic/gin v1.9.1
+	golang.org/x/exp v0.0.0-20230811145659-89c5cff77bcb
+)
 
 require (
 	github.com/bytedance/sonic v1.9.1 // indirect
