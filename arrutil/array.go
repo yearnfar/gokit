@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/yearnfar/gokit/mathutil"
+	"golang.org/x/exp/constraints"
 )
 
 // InArray 判断数据是否在数组中
@@ -17,7 +18,7 @@ func InArray[T comparable](v T, arr []T) bool {
 }
 
 // NumbersToStrs 任意类型slice转为字符串数组
-func NumbersToStrs[T mathutil.Number](arr []T) []string {
+func NumbersToStrs[T constraints.Integer | constraints.Float](arr []T) []string {
 	ret := make([]string, len(arr))
 	for i := range arr {
 		ret[i] = fmt.Sprint(arr[i])
