@@ -26,14 +26,6 @@ func NumbersToStrs[T constraints.Integer | constraints.Float](arr []T) []string 
 	return ret
 }
 
-// Merge 合并两个数组
-func Merge[T any](arr1 []T, arr2 []T) []T {
-	newArr := make([]T, len(arr1)+len(arr2))
-	copy(newArr, arr1)
-	copy(newArr[len(arr1):], arr2)
-	return newArr
-}
-
 // Unique 去重
 func Unique[T comparable](arr []T) []T {
 	ret := make([]T, 0, len(arr))
@@ -48,7 +40,7 @@ func Unique[T comparable](arr []T) []T {
 }
 
 // Intersect 两个数组取交集
-func Intersect[T comparable](arr1 []T, arr2 []T) []T {
+func Intersect[T comparable](arr1, arr2 []T) []T {
 	ret := make([]T, 0, mathutil.Min(len(arr1), len(arr2)))
 	for _, a := range arr1 {
 		if InArray(a, arr2) {
@@ -56,6 +48,14 @@ func Intersect[T comparable](arr1 []T, arr2 []T) []T {
 		}
 	}
 	return ret
+}
+
+// Merge 合并两个数组
+func Merge[T any](arr1, arr2 []T) []T {
+	arr := make([]T, len(arr1)+len(arr2))
+	copy(arr, arr1)
+	copy(arr[len(arr1):], arr2)
+	return arr
 }
 
 // Reverse 反转数组
@@ -68,23 +68,21 @@ func Reverse[T any](arr []T) []T {
 	return arr
 }
 
-// Split 将数组分为n等份
+// Split 将数组分为n份
 func Split[T any](arr []T, n int) (ret [][]T) {
-	if n == 0 {
-		return
+	if n < 2 {
+		return [][]T{arr}
 	}
-	size := len(arr) / n
-	left := len(arr) % n
-
+	size, left := len(arr)/n, len(arr)%n
 	ret = make([][]T, n)
 	offset := 0
-
 	for i := 0; i < n; i++ {
 		delta := size
 		if i < left {
 			delta++
 		}
-		ret[i] = arr[offset : offset+delta]
+		ret[i] = make([]T, delta)
+		copy(ret[i], arr[offset:offset+delta])
 		offset += delta
 	}
 	return ret

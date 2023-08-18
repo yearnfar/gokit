@@ -1,7 +1,7 @@
 package arrutil
 
 import (
-	"fmt"
+	"reflect"
 	"testing"
 )
 
@@ -39,22 +39,18 @@ func TestNumbersToString(t *testing.T) {
 		{[]int{1, 2, 3, 4, 5}, []string{"1", "2", "3", "4", "5"}},
 		{[]float64{1.1, 2.1, 3.0, 4.0, 5.0}, []string{"1.1", "2.1", "3.0", "4.0", "5.0"}},
 	}
-
 	for _, item := range testData {
 		switch value := item.arr.(type) {
 		case []int:
-			ret := NumbersToStrs(value)
-			if fmt.Sprint(ret) != fmt.Sprint(item.expect) {
+			if ret := NumbersToStrs(value); !reflect.DeepEqual(ret, item.expect) {
 				t.Fatalf("number : %v , export: %v", item.arr, item.expect)
 			}
 		case []float64:
-			ret := NumbersToStrs(value)
-			if fmt.Sprint(ret) != fmt.Sprint(item.expect) {
+			if ret := NumbersToStrs(value); !reflect.DeepEqual(ret, item.expect) {
 				t.Fatalf("number : %v , export: %v", item.arr, item.expect)
 			}
 		case []float32:
-			ret := NumbersToStrs(value)
-			if fmt.Sprint(ret) != fmt.Sprint(item.expect) {
+			if ret := NumbersToStrs(value); !reflect.DeepEqual(ret, item.expect) {
 				t.Fatalf("number : %v , export: %v", item.arr, item.expect)
 			}
 		}
@@ -76,7 +72,7 @@ func TestMerge(t *testing.T) {
 
 	for _, item := range testData {
 		ret := Merge(item.arr[0], item.arr[1])
-		if fmt.Sprint(ret) != fmt.Sprint(item.expect) {
+		if !reflect.DeepEqual(ret, item.expect) {
 			t.Fatalf("merge : %v and %v, ret: %v, export: %v", item.arr[0], item.arr[1], ret, item.expect)
 		}
 	}
@@ -88,14 +84,17 @@ func TestSplit(t *testing.T) {
 		n      int
 		expect [][]any
 	}{
-		{[]any{1, 2, 3, 4, 5}, 0, [][]any{}},
-		{[]any{1, 2, 3, 4, 5}, 1, [][]any{{1, 2, 3, 4, 5}}},
-		{[]any{1, 2, 3, 4, 5}, 2, [][]any{{1, 2, 3}, {4, 5}}},
-		{[]any{1, 2, 3, 4, 5}, 3, [][]any{{1, 2}, {3, 4}, {5}}},
-		{[]any{1, 2, 3, 4, 5}, 4, [][]any{{1, 2}, {3}, {4}, {5}}},
-		{[]any{1, 2, 3, 4, 5}, 5, [][]any{{1}, {2}, {3}, {4}, {5}}},
-		{[]any{1, 2, 3, 4, 5}, 6, [][]any{{1}, {2}, {3}, {4}, {5}, {}}},
-		{[]any{"你", "好", "再", "见"}, 0, [][]any{}},
+		{[]any{1, 2, 3, 4, 5, 6, 7, 8, 9}, 1, [][]any{{1, 2, 3, 4, 5, 6, 7, 8, 9}}},
+		{[]any{1, 2, 3, 4, 5, 6, 7, 8, 9}, 2, [][]any{{1, 2, 3, 4, 5}, {6, 7, 8, 9}}},
+		{[]any{1, 2, 3, 4, 5, 6, 7, 8, 9}, 3, [][]any{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}},
+		{[]any{1, 2, 3, 4, 5, 6, 7, 8, 9}, 4, [][]any{{1, 2, 3}, {4, 5}, {6, 7}, {8, 9}}},
+		{[]any{1, 2, 3, 4, 5, 6, 7, 8, 9}, 5, [][]any{{1, 2}, {3, 4}, {5, 6}, {7, 8}, {9}}},
+		{[]any{1, 2, 3, 4, 5, 6, 7, 8, 9}, 6, [][]any{{1, 2}, {3, 4}, {5, 6}, {7}, {8}, {9}}},
+		{[]any{1, 2, 3, 4, 5, 6, 7, 8, 9}, 7, [][]any{{1, 2}, {3, 4}, {5}, {6}, {7}, {8}, {9}}},
+		{[]any{1, 2, 3, 4, 5, 6, 7, 8, 9}, 8, [][]any{{1, 2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}}},
+		{[]any{1, 2, 3, 4, 5, 6, 7, 8, 9}, 9, [][]any{{1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}}},
+		{[]any{1, 2, 3, 4, 5, 6, 7, 8, 9}, 10, [][]any{{1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {}}},
+		{[]any{"你", "好", "再", "见"}, 0, [][]any{{"你", "好", "再", "见"}}},
 		{[]any{"你", "好", "再", "见"}, 1, [][]any{{"你", "好", "再", "见"}}},
 		{[]any{"你", "好", "再", "见"}, 2, [][]any{{"你", "好"}, {"再", "见"}}},
 		{[]any{"你", "好", "再", "见"}, 3, [][]any{{"你", "好"}, {"再"}, {"见"}}},
@@ -105,7 +104,7 @@ func TestSplit(t *testing.T) {
 
 	for _, item := range testData1 {
 		ret := Split(item.arr, item.n)
-		if fmt.Sprint(ret) != fmt.Sprint(item.expect) {
+		if !reflect.DeepEqual(ret, item.expect) {
 			t.Fatalf("arr: %v, n: %d, got: %v. expect: %v", item.arr, item.n, ret, item.expect)
 		}
 	}

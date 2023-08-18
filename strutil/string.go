@@ -7,7 +7,9 @@ import (
 )
 
 // Len 字符串长度, utf8.RuneCountInString() 别名
-func Len(s string) int { return utf8.RuneCountInString(s) }
+func Len(s string) int {
+	return utf8.RuneCountInString(s)
+}
 
 // Split 切割字符串，去除前后空格
 func Split(s, sep string) []string {
