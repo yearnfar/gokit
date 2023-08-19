@@ -70,3 +70,25 @@ func TestStrftime(t *testing.T) {
 		}
 	}
 }
+
+func TestStrptime(t *testing.T) {
+	testData := []struct {
+		str    string
+		layout string
+		expect time.Time
+	}{
+		{"2006-01-02 15:04:05 CST", "%Y-%m-%d %H:%M:%S %Z", time.Date(2006, 1, 2, 15, 4, 5, 0, time.Local)},
+		{"2006-01-02 15:04:05 +0800", "%Y-%m-%d %H:%M:%S %z", time.Date(2006, 1, 2, 15, 4, 5, 0, time.Local)},
+		{"2006-01-02 15:04:05", "%Y-%m-%d %H:%M:%S", time.Date(2006, 1, 2, 15, 4, 5, 0, time.Local)},
+		{"2006-01-02 15:04:05 +0200", "%Y-%m-%d %H:%M:%S %z", time.Date(2006, 1, 2, 15, 4, 5, 0, time.FixedZone("", 2*60*60))},
+	}
+
+	for _, item := range testData {
+		ti, err := Strptime(item.str, item.layout)
+		if err != nil {
+			t.Fatal(err)
+		} else if ti != item.expect {
+			t.Fatalf("t: %v, get: %v, expect: %v", item.str, ti, item.expect)
+		}
+	}
+}
