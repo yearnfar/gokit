@@ -5,51 +5,50 @@ import (
 	"time"
 )
 
+// 参考：https://docs.python.org/3/library/datetime.html
+
 // DateFormat pattern rules.
-var datePatterns = []string{
-	// year
-	"Y", "2006", // A full numeric representation of a year, 4 digits   Examples: 1999 or 2003
-	"y", "06", //A two digit representation of a year   Examples: 99 or 03
+var layoutPatterns = []string{
+	// 年
+	"%Y", "2006", // 以世纪为十进制数的年份。例如: 1999 或 2003
+	"%-Y", "06", // 没有世纪的年份并以零填充的十进制数字。例如，99 或 03
 
-	// month
-	"m", "01", // Numeric representation of a month, with leading zeros 01 through 12
-	"n", "1", // Numeric representation of a month, without leading zeros   1 through 12
-	"M", "Jan", // A short textual representation of a month, three letters Jan through Dec
-	"F", "January", // A full textual representation of a month, such as January or March   January through December
+	// 月
+	"%m", "01", // 月份为零填充的十进制数字。例如：01, 02, …, 12
+	"%-m", "1", // 月份，不用0填充。例如：1, 2, …, 12
+	"%b", "Jan", // 月份缩写名称。例如：Jan, Feb, …, Dec
+	"%B", "January", // 月份作为区域设置的全名。例如：January, February, …, December
 
-	// day
-	"d", "02", // Day of the month, 2 digits with leading zeros 01 to 31
-	"j", "2", // Day of the month without leading zeros 1 to 31
+	// 日
+	"%d", "02", // 使用0填充。例如：01, 02, …, 31
+	"%-d", "2", // 不用0填充。例如：1, 2, …, 31
 
-	// week
-	"D", "Mon", // A textual representation of a day, three letters Mon through Sun
-	"l", "Monday", // A full textual representation of the day of the week  Sunday through Saturday
+	// 时
+	"%H", "15", // 小时（24小时时钟）作为零填充的十进制数字。例如：00, 01, …, 23
+	"%I", "03", // 使用0填充的2位十进制数字。例如：01, 02, …, 12
+	"%-I", "3", // 不使用0天子的十进制数字。例如: 1, 2, …, 12
 
-	// time
-	"g", "3", // 12-hour format of an hour without leading zeros    1 through 12
-	"G", "15", // 24-hour format of an hour without leading zeros   0 through 23
-	"h", "03", // 12-hour format of an hour with leading zeros  01 through 12
-	"H", "15", // 24-hour format of an hour with leading zeros  00 through 23
+	// 分
+	"%M", "04", // 使用0填充的2位十进制数字。例如: 00, 01, …, 59
+	"%-M", "4", // 不使用0填充的十进制数字。例如: 1, 2, …, 59
 
-	"a", "pm", // Lowercase Ante meridiem and Post meridiem am or pm
-	"A", "PM", // Uppercase Ante meridiem and Post meridiem AM or PM
+	// 秒
+	"%S", "05", // 使用0填充的2位十进制数字。例如: 00, 01, …, 59
+	"%-S", "5", // 不使用0填充的十进制数字。例如: 1, 2, …, 59
 
-	"i", "04", // Minutes with leading zeros    00 to 59
-	"s", "05", // Seconds, with leading zeros   00 through 59
+	// 周
+	"%a", "Mon", // 星期作为区域设置的缩写名称。例如：Mon, Tue, …, Sun
+	"%A", "Monday", // 星期作为区域设置的全名。例如：Monday, Tuesday, …, Sunday
 
-	// time zone
-	"T", "MST",
-	"P", "-07:00",
-	"O", "-0700",
+	// 上午、下午
+	"%p", "PM",
 
-	// RFC 2822
-	"r", time.RFC1123Z,
+	// 时区
+	"%Z", "MST",
+	"%z", "-0700",
 }
 
-var replacer = strings.NewReplacer(datePatterns...)
-
-// Now 返回当前时间
-func Now() time.Time { return time.Now() }
+var replacer = strings.NewReplacer(layoutPatterns...)
 
 // Strptime 解析时间
 func Strptime(v string, layout string) (time.Time, error) {
