@@ -5,6 +5,108 @@ import (
 	"testing"
 )
 
+func TestArrayColumn(t *testing.T) {
+	type Object struct {
+		Id   any
+		Name string
+	}
+	testData := map[string][]Object{
+		"ints":   {{1, "a"}, {2, "b"}, {3, "c"}, {4, "d"}, {4, ""}},
+		"strs":   {{"1", "a"}, {"2", "b"}, {"3", "c"}, {"4", "d"}, {"4", ""}},
+		"floats": {{1.0, "a"}, {2.0, "b"}, {3.0, "c"}, {4.0, "d"}, {4.0, ""}},
+	}
+	for typ, list := range testData {
+		switch typ {
+		case "ints":
+			ids := Column(list, func(item Object) int { return item.Id.(int) })
+			want := []int{1, 2, 3, 4, 4}
+			if !reflect.DeepEqual(ids, want) {
+				t.Errorf("Column() = %v, want %v", ids, want)
+			}
+		case "strs":
+			ids := Column(list, func(item Object) string { return item.Id.(string) })
+			want := []string{"1", "2", "3", "4", "4"}
+			if !reflect.DeepEqual(ids, want) {
+				t.Errorf("Column() = %v, want %v", ids, want)
+			}
+		case "floats":
+			ids := Column(list, func(item Object) float64 { return item.Id.(float64) })
+			want := []float64{1.0, 2.0, 3.0, 4.0, 4.0}
+			if !reflect.DeepEqual(ids, want) {
+				t.Errorf("Column() = %v, want %v", ids, want)
+			}
+		}
+	}
+}
+
+func TestArrayColumnMap(t *testing.T) {
+	type Object struct {
+		Id   any
+		Name string
+	}
+	testData := map[string][]Object{
+		"ints":   {{1, "a"}, {2, "b"}, {3, "c"}, {4, "d"}, {4, ""}},
+		"strs":   {{"1", "a"}, {"2", "b"}, {"3", "c"}, {"4", "d"}, {"4", ""}},
+		"floats": {{1.0, "a"}, {2.0, "b"}, {3.0, "c"}, {4.0, "d"}, {4.0, ""}},
+	}
+	for typ, list := range testData {
+		switch typ {
+		case "ints":
+			ids := ColumnMap(list, func(item Object) (int, string) { return item.Id.(int), item.Name })
+			want := map[int]string{1: "a", 2: "b", 3: "c", 4: ""}
+			if !reflect.DeepEqual(ids, want) {
+				t.Errorf("ColumnMap() = %v, want %v", ids, want)
+			}
+		case "strs":
+			ids := ColumnMap(list, func(item Object) (string, string) { return item.Id.(string), item.Name })
+			want := map[string]string{"1": "a", "2": "b", "3": "c", "4": ""}
+			if !reflect.DeepEqual(ids, want) {
+				t.Errorf("ColumnMap() = %v, want %v", ids, want)
+			}
+		case "floats":
+			out := ColumnMap(list, func(item Object) (float64, string) { return item.Id.(float64), item.Name })
+			want := map[float64]string{1.0: "a", 2.0: "b", 3.0: "c", 4.0: ""}
+			if !reflect.DeepEqual(out, want) {
+				t.Errorf("ColumnMap() = %v, want %v", out, want)
+			}
+		}
+	}
+}
+
+func TestArrayColumnUniq(t *testing.T) {
+	type Object struct {
+		Id   any
+		Name string
+	}
+	testData := map[string][]Object{
+		"ints":   {{1, "a"}, {1, "b"}, {2, "c"}, {2, "d"}, {3, ""}},
+		"strs":   {{"1", "a"}, {"1", "b"}, {"2", "c"}, {"2", "d"}, {"3", ""}},
+		"floats": {{1.0, "a"}, {1.0, "b"}, {2.0, "c"}, {2.0, "d"}, {3.0, ""}},
+	}
+	for typ, list := range testData {
+		switch typ {
+		case "ints":
+			ids := ColumnUnique(list, func(item Object) int { return item.Id.(int) })
+			want := []int{1, 2, 3}
+			if !reflect.DeepEqual(ids, want) {
+				t.Errorf("Column() = %v, want %v", ids, want)
+			}
+		case "strs":
+			ids := ColumnUnique(list, func(item Object) string { return item.Id.(string) })
+			want := []string{"1", "2", "3"}
+			if !reflect.DeepEqual(ids, want) {
+				t.Errorf("Column() = %v, want %v", ids, want)
+			}
+		case "floats":
+			ids := ColumnUnique(list, func(item Object) float64 { return item.Id.(float64) })
+			want := []float64{1.0, 2.0, 3.0}
+			if !reflect.DeepEqual(ids, want) {
+				t.Errorf("Column() = %v, want %v", ids, want)
+			}
+		}
+	}
+}
+
 func TestInArray(t *testing.T) {
 	testData := []struct {
 		arr    []any
