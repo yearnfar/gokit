@@ -7,6 +7,65 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
+// Max 数组取最大值
+func Max[T constraints.Ordered](arr []T) (ret T) {
+	if len(arr) == 0 {
+		return
+	}
+	ret = arr[0]
+	for _, v := range arr[1:] {
+		if ret < v {
+			ret = v
+		}
+	}
+	return ret
+}
+
+// Min 数组取最小值
+func Min[T constraints.Ordered](arr []T) (ret T) {
+	if len(arr) == 0 {
+		return
+	}
+	ret = arr[0]
+	for _, v := range arr[1:] {
+		if ret > v {
+			ret = v
+		}
+	}
+	return ret
+}
+
+// Column 返回数组对象中的int类型的列组成的数组
+func Column[T, V any](arr []T, fn func(item T) V) (result []V) {
+	for _, v := range arr {
+		result = append(result, fn(v))
+	}
+	return
+}
+
+// ColumnMap 返回数组对象属性值映射的map
+func ColumnMap[K comparable, V, T any](arr []T, fn func(item T) (K, V)) (result map[K]V) {
+	result = make(map[K]V)
+	for _, v := range arr {
+		k, v := fn(v)
+		result[k] = v
+	}
+	return
+}
+
+// ColumnUnique 返回数组对象中的int类型的列组成的数组并去重
+func ColumnUnique[T any, V comparable](arr []T, fn func(item T) V) (result []V) {
+	m := make(map[V]struct{})
+	for _, v := range arr {
+		val := fn(v)
+		if _, ok := m[val]; !ok {
+			result = append(result, val)
+			m[val] = struct{}{}
+		}
+	}
+	return
+}
+
 // InArray 判断数据是否在数组中
 func InArray[T comparable](v T, arr []T) bool {
 	for _, a := range arr {
